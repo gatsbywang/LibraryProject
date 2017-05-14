@@ -29,7 +29,7 @@ import okhttp3.Response;
  * Created by 花歹 on 2017/5/5.
  * Email:   gatsbywang@126.com
  * Description: okhttp引擎
- * Thought:
+ * Thought: 缓存 只针对某些
  */
 
 public class OkHttpEngine implements IHttpEngine {
@@ -43,9 +43,12 @@ public class OkHttpEngine implements IHttpEngine {
         Log.e(TAG, "[Request] Url: " + finalUrl + "\n" + "Params: " + params.toString() + "\n"
                 + "Type: Get");
 
-        //1、判断是否需要缓存
+        //1、判断是否需要缓存,TODO 这种缓存方式只能针对特定情况
         if (isCache) {
-            callback.onSuccess(CacheUtils.getLocalResultJson(finalUrl));
+            String localResultJson = CacheUtils.getLocalResultJson(finalUrl);
+            if (!TextUtils.isEmpty(localResultJson)) {
+                callback.onSuccess(CacheUtils.getLocalResultJson(finalUrl));
+            }
         }
 
         final Request request = new Request.Builder().url(finalUrl).tag(context).get().build();
