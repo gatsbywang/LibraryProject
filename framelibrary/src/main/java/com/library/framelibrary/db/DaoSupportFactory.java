@@ -1,4 +1,4 @@
-package com.library.framelibrary;
+package com.library.framelibrary.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;

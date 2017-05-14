@@ -1,7 +1,13 @@
-package com.library.baselibrary.http;
+package com.library.framelibrary.http;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.library.baselibrary.http.EngineCallback;
+import com.library.baselibrary.http.HttpUtils;
+import com.library.baselibrary.http.IHttpEngine;
+import com.library.framelibrary.http.cache.CacheUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,11 +38,17 @@ public class OkHttpEngine implements IHttpEngine {
     private final String TAG = OkHttpEngine.class.getName();
 
     @Override
-    public void get(Context context, String url, Map<String, String> header, Map<String, Object> params, final EngineCallback callback) {
-        url = HttpUtils.jointParams(url, params);
-        Log.e(TAG, "[Request] Url: " + url + "\n" + "Params: " + params.toString() + "\n"
+    public void get(final boolean isCache, Context context, final String url, Map<String, String> header, Map<String, Object> params, final EngineCallback callback) {
+        final String finalUrl = HttpUtils.jointParams(url, params);
+        Log.e(TAG, "[Request] Url: " + finalUrl + "\n" + "Params: " + params.toString() + "\n"
                 + "Type: Get");
-        final Request request = new Request.Builder().url(url).tag(context).get().build();
+
+        //1、判断是否需要缓存
+        if (isCache) {
+            callback.onSuccess(CacheUtils.getLocalResultJson(finalUrl));
+        }
+
+        final Request request = new Request.Builder().url(finalUrl).tag(context).get().build();
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -48,18 +60,34 @@ public class OkHttpEngine implements IHttpEngine {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                //1、每次获取到数据判断是否需要缓存
+                //1、判断是否需要缓存
+                if (isCache) {
+                    //2、取出缓存比对上次缓存的内容
+                    String resultJsonCache = CacheUtils.getLocalResultJson(finalUrl);
+                    if (!TextUtils.isEmpty(resultJsonCache)) {
+                        if (resultJsonCache.equals(result)) {
+                            //TODO 比对成功不需要进行缓存,但需要回调
+                            return;
+                        }
+                    }
+                }
+                callback.onSuccess(result);
+                if (isCache) {
+                    CacheUtils.saveLocalData(finalUrl, result);
+                }
                 Log.i(TAG, "[Response] result: success" + "\n"
                         + result + "\n" + "Type: Get");
-                callback.onSuccess(response.body().string());
             }
         });
     }
 
     @Override
-    public void post(Context context, String url, Map<String, String> header, Map<String, Object> params, final EngineCallback callback) {
+    public void post(boolean isCache, Context context, String url, Map<String, String> header, Map<String, Object> params, final EngineCallback callback) {
         String jointUrl = HttpUtils.jointParams(url, params);
         Log.e(TAG, "[Request] Url: " + url + "\n" + "Params: " + params.toString() + "\n"
                 + "Type: Post");
+
 
         RequestBody requestBody = appendBody(params);
         final Request request = new Request.Builder()
@@ -89,6 +117,7 @@ public class OkHttpEngine implements IHttpEngine {
 
     /**
      * 获取请求body
+     *
      * @param params
      * @return
      */
@@ -101,6 +130,7 @@ public class OkHttpEngine implements IHttpEngine {
 
     /**
      * 封装参数
+     *
      * @param builder
      * @param params
      */
@@ -124,6 +154,7 @@ public class OkHttpEngine implements IHttpEngine {
 
     /**
      * 获取文件类型
+     *
      * @param path
      * @return
      */

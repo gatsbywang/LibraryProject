@@ -1,4 +1,4 @@
-package com.library.framelibrary;
+package com.library.framelibrary.http;
 
 import android.content.Context;
 
@@ -13,6 +13,9 @@ import java.util.Map;
  * Email:   gatsbywang@126.com
  * Description: 带有业务的回调
  * Thought:1、解决公共参数 2、解决Json解析
+ *
+ * 针对于http缓存问题，处理方式为：1、在回调里面 2、引擎里面
+ * 针对在回调里缓存，如在HttpCallback的单一原则不适用
  */
 
 public abstract class HttpCallback<T> implements EngineCallback {
