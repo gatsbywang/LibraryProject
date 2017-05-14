@@ -62,7 +62,7 @@ public interface IDaoSupport<T> {
      * @param whereArgs
      * @return
      */
-    public int delete(String whereClause, String[] whereArgs);
+    public int delete(String whereClause, String... whereArgs);
 
     /**
      * 更新

@@ -14,10 +14,10 @@ import java.util.Map;
 public interface IHttpEngine {
 
     //get请求
-    void get(Context context, String url, Map<String, String> header, Map<String, Object> params, EngineCallback callback);
+    void get(boolean isCache, Context context, String url, Map<String, String> header, Map<String, Object> params, EngineCallback callback);
 
     //post请求
-    void post(Context context, String url, Map<String, String> header, Map<String, Object> params, EngineCallback callback);
+    void post(boolean isCache, Context context, String url, Map<String, String> header, Map<String, Object> params, EngineCallback callback);
     //上传
 
     //下载

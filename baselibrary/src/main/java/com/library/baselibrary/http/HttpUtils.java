@@ -17,7 +17,7 @@ import java.util.Map;
 public class HttpUtils {
 
     //默认引擎
-    private static IHttpEngine mHttpEngine = new OkHttpEngine();
+    private static IHttpEngine mHttpEngine = null;
 
 
     private final Context mContext;
@@ -31,12 +31,16 @@ public class HttpUtils {
     //请求头
     private Map<String, String> mHeader;
 
+
     //请求方式
     private int mType;
 
     private static final int POST_TYPE = 0x0011;
 
     private static final int GET_TYPE = 0x0012;
+
+    //是否有缓存
+    private boolean mIsCache;
 
     private HttpUtils(Context context) {
         this.mContext = context;
@@ -101,6 +105,17 @@ public class HttpUtils {
      */
     public HttpUtils params(String key, Object value) {
         this.mParams.put(key, value);
+        return this;
+    }
+
+    /**
+     * 是否配置缓存
+     *
+     * @param isCache
+     * @return
+     */
+    public HttpUtils cache(boolean isCache) {
+        this.mIsCache = isCache;
         return this;
     }
 
@@ -170,7 +185,7 @@ public class HttpUtils {
      * @param callback
      */
     private void get(String url, Map<String, String> header, Map<String, Object> params, EngineCallback callback) {
-        mHttpEngine.get(mContext, url, header, params, callback);
+        mHttpEngine.get(mIsCache, mContext, url, header, params, callback);
     }
 
     /**
@@ -182,7 +197,7 @@ public class HttpUtils {
      * @param callback
      */
     private void post(String url, Map<String, String> header, Map<String, Object> params, EngineCallback callback) {
-        mHttpEngine.post(mContext, url, header, params, callback);
+        mHttpEngine.post(mIsCache, mContext, url, header, params, callback);
     }
 
     /**
