@@ -1,4 +1,4 @@
-package com.library.framelibrary.skin.attr;
+package com.library.baselibrary.skin.attr;
 
 import android.view.View;
 

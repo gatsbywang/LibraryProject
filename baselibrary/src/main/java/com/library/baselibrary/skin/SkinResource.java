@@ -1,4 +1,4 @@
-package com.library.framelibrary.skin;
+package com.library.baselibrary.skin;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -6,9 +6,7 @@ import android.content.res.AssetManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -26,6 +24,7 @@ public class SkinResource {
 
     public SkinResource(Context context, String skinPath) {
         try {
+
             //拿本地resource
             Resources superResource = context.getResources();
             //创建AssertManager
@@ -38,8 +37,7 @@ public class SkinResource {
             addAssetPathMethod.setAccessible(true);
 
             //反射执行方法，添加本地下载的皮肤
-            addAssetPathMethod.invoke(assetManager, Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + File.separator + "change.skin");
+            addAssetPathMethod.invoke(assetManager, skinPath);
             //创建属于皮肤的resource
             mSkinResource = new Resources(assetManager, superResource.getDisplayMetrics(),
                     superResource.getConfiguration());
@@ -63,11 +61,12 @@ public class SkinResource {
      * 通过名字获取drawable
      *
      * @param resName
-     * @return
+     * @return 不能直接传Id 获取资源，插件中的Id肯定不一样
      */
     public Drawable getDrawablebyName(String resName) {
         try {
             //TODO 注意mipmap的情况
+
             int resId = mSkinResource.getIdentifier(resName, "drawable", mPackageName);
             Drawable drawable = mSkinResource.getDrawable(resId);
             return drawable;
@@ -82,7 +81,7 @@ public class SkinResource {
      * 通过名字获取颜色
      *
      * @param resName
-     * @return
+     * @return 不能直接传Id 获取资源，插件中的Id肯定不一样
      */
     public ColorStateList getColorbyName(String resName) {
         try {

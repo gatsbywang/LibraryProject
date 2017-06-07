@@ -14,12 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewParent;
 
-
-import com.library.framelibrary.skin.SkinAttrSupport;
-import com.library.framelibrary.skin.SkinManager;
-import com.library.framelibrary.skin.attr.SkinAttr;
-import com.library.framelibrary.skin.attr.SkinView;
-import com.library.framelibrary.skin.support.SkinAppCompatViewInflater;
+import com.library.baselibrary.skin.SkinAttrSupport;
+import com.library.baselibrary.skin.SkinManager;
+import com.library.baselibrary.skin.SkinResource;
+import com.library.baselibrary.skin.attr.SkinAttr;
+import com.library.baselibrary.skin.attr.SkinView;
+import com.library.baselibrary.skin.callback.ISkinChangeListener;
+import com.library.baselibrary.skin.support.SkinAppCompatViewInflater;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -33,7 +34,7 @@ import java.util.List;
  * Thought:
  */
 
-public class BaseSkinActivity extends AppCompatActivity implements LayoutInflaterFactory {
+public class BaseSkinActivity extends AppCompatActivity implements LayoutInflaterFactory, ISkinChangeListener {
 
     public SkinAppCompatViewInflater mAppCompatViewInflater;
 
@@ -57,13 +58,16 @@ public class BaseSkinActivity extends AppCompatActivity implements LayoutInflate
         //1、创建view
         //  If the Factory didn't handle it, let our createView() method try
         View view = createView(parent, name, context, attrs);
-//        Log.e(TAG, view + "");
+
         //2、解析属性 src textColor background 自定义属性
         if (view != null) {
             List<SkinAttr> skinAttrs = SkinAttrSupport.getSkinAttrs(context, attrs);
             SkinView skinView = new SkinView(view, skinAttrs);
             //3、统一交给SkinManager管理
             managerSkinView(skinView);
+
+            //4、判断要不要换肤
+            SkinManager.getInstance().checkChangeSkin(skinView);
         }
         return view;
     }
@@ -82,7 +86,7 @@ public class BaseSkinActivity extends AppCompatActivity implements LayoutInflate
         skinViews.add(skinView);
     }
 
-    //    @Override
+    //        @Override
     public View createView(View parent, final String name, @NonNull Context context,
                            @NonNull AttributeSet attrs) {
         if (mAppCompatViewInflater == null) {
@@ -128,5 +132,16 @@ public class BaseSkinActivity extends AppCompatActivity implements LayoutInflate
             }
             parent = parent.getParent();
         }
+    }
+
+    @Override
+    public void changerSkin(SkinResource skinResource) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        SkinManager.getInstance().unRegister(this);
+        super.onDestroy();
     }
 }

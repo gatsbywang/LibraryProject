@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.library.framelibrary.skin.support;
+package com.library.baselibrary.skin.support;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -140,7 +140,7 @@ public class SkinAppCompatViewInflater {
                 break;
         }
 
-        if (view == null) {
+        if (view == null ) {
             // If the original context does not equal our themed context, then we need to manually
             // inflate it using the name so that android:theme takes effect.
             view = createViewFromTag(context, name, attrs);

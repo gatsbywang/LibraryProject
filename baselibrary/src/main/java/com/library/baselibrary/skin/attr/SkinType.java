@@ -1,4 +1,4 @@
-package com.library.framelibrary.skin.attr;
+package com.library.baselibrary.skin.attr;
 
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.library.framelibrary.skin.SkinManager;
-import com.library.framelibrary.skin.SkinResource;
+import com.library.baselibrary.skin.SkinManager;
+import com.library.baselibrary.skin.SkinResource;
 
 
 /**

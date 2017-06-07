@@ -1,12 +1,12 @@
-package com.library.framelibrary.skin;
+package com.library.baselibrary.skin;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.library.framelibrary.skin.attr.SkinAttr;
-import com.library.framelibrary.skin.attr.SkinType;
+import com.library.baselibrary.skin.attr.SkinAttr;
+import com.library.baselibrary.skin.attr.SkinType;
 
 import java.util.ArrayList;
 import java.util.List;
